@@ -7,8 +7,8 @@ No_of_elements	4
 Poly_order	2
 Time_order	4
 Timestep	0.04
-Finaltime	2400
-printtime	300
+Finaltime	1200
+printtime	30
 printpoints	20
 Length_scale	1.0
 Time_scale	1.0
@@ -21,13 +21,13 @@ Xylose_scale	1.0
 Furfural_scale	1.0
 
 Initial_and_BCs
-Xylan_solid_fraction	0.263
+Xylan_solid_fraction	0.26
 Initial_porosity	0.8
-Bulk_steam_conc	0.000112182334734
-Initial_acid_conc	0.000101936799185
-Initial_liq_fraction	0.254545454545
+Bulk_steam_conc	0.00014156385579352633
+Initial_acid_conc	0.0001
+Initial_liq_fraction	0.25
 Initial_Temperature	300.0
-Steam_Temperature	423.0
+Steam_Temperature	423.15
 
 Energetics
 Diffusion_activ_energy_steam	0.0
@@ -51,18 +51,18 @@ Mol_wt_Xylan	132.0
 Mol_wt_Xylog	450.0
 Mol_wt_Xylose	150.0
 Mol_wt_Furf	96.0
-Mol_wt_water	18.0
+Mol_wt_water	18.01528
 Tortuosity_gas	1.0
 Tortuosity_liq	1.0
 pore_diameter_nm	15.0
 xylog_mol_size_nm	2.04
 xylose_mol_size_nm	0.68
-furf_mol_size_nm	0.57
+furf_mol_size_nm	0.56
 
 Reaction_rates
-condensation	10.0	423.0	0.0
-evaporation	10.0	423.0	0.8
+condensation	10.0	423.15	0.0
+evaporation	10.0	423.15	0.8
 xylan_to_xylog	1e+15	0.0	110000.0
-xylan_to_xylose	8e+17	0.0	129800.0
+xylan_to_xylose	8e+17	0.0	130000.0
 xylog_to_xylose	2.5e+14	0.0	110000.0
-xylose_to_furf	7e+11	0.0	98400.0
+xylose_to_furf	7e+11	0.0	98000.0

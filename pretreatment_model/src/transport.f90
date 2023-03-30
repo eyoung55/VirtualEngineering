@@ -226,7 +226,8 @@ subroutine calcreactandsourceterms(solnvec,rcoord,time,inpobj,reactcoeffs,source
 	
 	reactcoeffs(Steam_eq)  = -kcond*(ep-el)
 	reactcoeffs(Liquid_eq) = -kcond*csteam*inpobj%M_w/inpobj%rho_l - kevap
-	reactcoeffs(Temperature_eq) = -4.d0*inpobj%h/diameter
+	!reactcoeffs(Temperature_eq) = -4.d0*inpobj%h/diameter
+	reactcoeffs(Temperature_eq) = -4.d0*inpobj%h/diameter/rhoCeff
 	reactcoeffs(Xylan_eq)  =  -(kxylog+kxyl1)*cacid*ep
 	reactcoeffs(Xylog_eq)  =  -kxyl2*cacid
 	reactcoeffs(Xylose_eq) = -kfur*cacid
@@ -239,7 +240,10 @@ subroutine calcreactandsourceterms(solnvec,rcoord,time,inpobj,reactcoeffs,source
 	
 	sourceterms(Temperature_eq) = inpobj%L_cond*kcond*(ep-el)*csteam*inpobj%M_w/&
 			(rhoCeff) - inpobj%L_cond*kevap*(el-el0)*inpobj%rho_l/(rhoCeff)&
-			+ 4.d0*inpobj%h/diameter*inpobj%T_steam;
+			+ 4.d0*inpobj%h/diameter/rhoCeff*inpobj%T_steam;
+	!sourceterms(Temperature_eq) = inpobj%L_cond*kcond*(ep-el)*csteam*inpobj%M_w/&
+	!		(rhoCeff) - inpobj%L_cond*kevap*(el-el0)*inpobj%rho_l/(rhoCeff)&
+	!		+ 4.d0*inpobj%h/diameter*inpobj%T_steam;
 
 	sourceterms(Xylan_eq) = 0.d0
 	
@@ -356,7 +360,8 @@ function calc_ep(fx0,ep0,fX) result(ep)
       !ep = 1.d0-(1.d0-fX0)*(1.d0-ep0)/(1.d0-fX)
       !ep = fX0*(1-ep0)+ep0-fX
 
-      dratio=2.0
+      !dratio=2.0
+      dratio=0.5214285714
 
       k = (fX0/(1-fX0) + dratio)/(1-ep0)
 

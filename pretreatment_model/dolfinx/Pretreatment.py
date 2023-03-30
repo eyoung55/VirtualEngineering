@@ -148,10 +148,10 @@ class Pretreatment:
         if ve_params is None:
             # self.c_sbulk = 0.14 * 1e3   # bulk steam concentration (from paper, now set by lookup table)
             self.c_acid0 = (
-                0.1 * 1e3
+                0.1 * 1e3 #0.101 * 1e3
             )  # initial acid concentration: Convert mol/self.length to mol/m^3
-            self.f_x0 = 0.26  # xylan mass fraction
-            self.eps_p0 = 0.8  # initial porosity
+            self.f_x0 = 0.26 # 0.2626  # xylan mass fraction
+            self.eps_p0 = 0.8 #0.808  # initial porosity
             self.f_is0 = 0.44  # initial solid fraction
             self.T_s = 423.15  # steam temperature
             self.glucan_solid_fraction_0 = 0.4
@@ -174,6 +174,7 @@ class Pretreatment:
 
         # Convert c_sbulk to (mol/m^3) => density (kg/m^3) / molecular weight (kg/mol)
         self.c_sbulk = steam_density / self.M_w
+        print(self.c_sbulk)
 
         self.eps_lt = self.eps_p0  # initial liquid+gas (= 1-solid) volumetric fraction
         self.eps_l0 = 0.25  # initial liquid volumetric fraction

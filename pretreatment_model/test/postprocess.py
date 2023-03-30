@@ -35,7 +35,8 @@ def readtimehist(filename):
 def findporosity(fX0,ep0,fXtilde):
 
     #porosity=ep0+fx0*(1.0-ep0)-fXtilde
-    dratio=2.0
+    # dratio=2.0
+    dratio=0.5214285714
 
     k = (fX0/(1-fX0) + dratio)/(1-ep0)
 
@@ -54,7 +55,7 @@ def findporosity(fX0,ep0,fXtilde):
 #======================================================================
 
 
-inputfilename='pretreat_defs_updated.inp'
+inputfilename='pretreat_defs.inp'
 meshp, scales, IBCs, rrates, Egtcs, deto =\
         pt_input.readinpfile(inputfilename)
 
@@ -62,7 +63,7 @@ l = meshp['maxx']
 nelem = meshp['enum']
 
 finaltime = meshp['ftime']
-ptime	  = meshp['ptime']
+ptime  = meshp['ptime']
 #establish parameters for porosity and time dependent [acid] calcs
 fx0 = IBCs['xyfr']
 ep0 = IBCs['poro']
@@ -76,11 +77,13 @@ M_furf   = deto['fumw']
 M_xylog  = deto['xomw']
 #print(M_xylose,M_furf,M_xylog) % molecular weights? JJS 3/21/21
 
-filenames = sorted(glob.glob(argv[1]), key=lambda f: int(f.split(".")[0].split("_")[1]))
+# filenames = sorted(glob.glob(argv[1]), key=lambda f: int(f.split(".")[0].split("_")[1]))
+filenames = sorted(glob.glob("outpoly*.dat"))
 numfiles=len(filenames)
 
-expfilename=argv[2]
-(texp,xyexp,xoexp,fexp,liqexp,xylexp,FISexp)=readtimehist(expfilename)
+
+# expfilename=argv[2]
+# (texp,xyexp,xoexp,fexp,liqexp,xylexp,FISexp)=readtimehist(expfilename)
 
 tsim=np.zeros(numfiles)
 xysim=np.zeros(numfiles)
@@ -95,7 +98,7 @@ for i in range(numfiles):
     infile=open(filenames[i],'r')
     it=0
     #time in minutes
-    time = float(filenames[i].split('.')[0].split('_')[-1])*ptime/60.0
+    time = float(filenames[i].split('.')[0].split('_')[-1])*ptime
 
     x        = np.array([])
     steam    = np.array([])
@@ -127,6 +130,8 @@ for i in range(numfiles):
     for j in range(n):
         porosity = np.append(porosity,findporosity(fx0,ep0,xylan[j]))
 
+    # porosity = ep0+fx0*(1.0-ep0)-xylan
+
 
     # integrate concentrations to determine bulk xylose, xylog, and furfural concentrations
     solidvfrac = 1.0-porosity
@@ -149,43 +154,66 @@ for i in range(numfiles):
     xylsim[i]=xylan_bulk*100
     FISsim[i]=solidweight*rho_s/(solidweight*rho_s+liquid_bulk*rho_l)
 
+
+    xylanweight0 = fx0*(1.0-ep0)*l
+
+    reactmass = xylanweight0 - xylanweight
+
+    conv = reactmass/xylanweight0
+    glucan_solid_fraction = 0.4
+    X_G = glucan_solid_fraction/(1.0 - IBCs['xyfr']*conv)
+
+
+
+
+    print(i)
+    print(f"Time: {tsim[i]}")
+    print(f"Xylan: {xylsim[i]}")
+    print(f"Xylose: {xysim[i]}")
+    print(f"Xylog: {xosim[i]}")
+    print(f"Furfural: {fsim[i]}")
+    # print(f"Liquid: {liqsim[i]}")
+    print(f"FIS: {FISsim[i]}")
+    print(f"conv: {conv}")
+    print(f"Glucan: {X_G}")
+
     infile.close()
 
-plt.close('all')
-fig, ax=plt.subplots(2,3)
-fig.tight_layout()
+# plt.close('all')
+# fig, ax=plt.subplots(2,3)
+# fig.tight_layout()
 
-plt.ticklabel_format(style='sci', axis='y')
+# plt.ticklabel_format(style='sci', axis='y')
 
-ax[0,0].plot(tsim,xysim,label='sim',color='red',linewidth=2)
-#ax[0,0].plot(texp,xyexp,label='exp',color='blue',linewidth=2)
-#ax[0,0].axis([0,1.2*max(texp),0,2.5*max(xyexp)])
-ax[0,0].set_title("Xylose (g/L)")
+# ax[0,0].plot(tsim,xysim,label='sim',color='red',linewidth=2)
+# #ax[0,0].plot(texp,xyexp,label='exp',color='blue',linewidth=2)
+# #ax[0,0].axis([0,1.2*max(texp),0,2.5*max(xyexp)])
+# ax[0,0].set_title("Xylose (g/L)")
 
-ax[0,1].plot(tsim,xosim,label='sim',color='red',linewidth=2)
-#ax[0,1].plot(texp,xoexp,label='exp',color='blue',linewidth=2)
-#ax[0,1].axis([0,1.2*max(texp),0,2.5*max(xosim)])
-ax[0,1].set_title("Xylog (g/L)")
+# ax[0,1].plot(tsim,xosim,label='sim',color='red',linewidth=2)
+# #ax[0,1].plot(texp,xoexp,label='exp',color='blue',linewidth=2)
+# #ax[0,1].axis([0,1.2*max(texp),0,2.5*max(xosim)])
+# ax[0,1].set_title("Xylog (g/L)")
 
-ax[0,2].plot(tsim,fsim,label='sim',color='red',linewidth=2)
-#ax[0,2].plot(texp,fexp,label='exp',color='blue',linewidth=2)
-#ax[0,2].axis([0,1.2*max(texp),0,2.5*max(fexp)])
-ax[0,2].set_title("Furfural (g/L)")
+# ax[0,2].plot(tsim,fsim,label='sim',color='red',linewidth=2)
+# #ax[0,2].plot(texp,fexp,label='exp',color='blue',linewidth=2)
+# #ax[0,2].axis([0,1.2*max(texp),0,2.5*max(fexp)])
+# ax[0,2].set_title("Furfural (g/L)")
 
-ax[1,0].plot(tsim,liqsim,label='sim',color='red',linewidth=2)
-#ax[1,0].plot(texp,liqexp,label='exp',color='blue',linewidth=2)
-#ax[1,0].axis([0,1.2*max(texp),0,2.5*max(liqexp)])
-ax[1,0].set_title("Dilution (g/g)")
+# ax[1,0].plot(tsim,liqsim,label='sim',color='red',linewidth=2)
+# #ax[1,0].plot(texp,liqexp,label='exp',color='blue',linewidth=2)
+# #ax[1,0].axis([0,1.2*max(texp),0,2.5*max(liqexp)])
+# ax[1,0].set_title("Dilution (g/g)")
 
-ax[1,1].plot(tsim,xylsim,label='sim',color='red',linewidth=2)
-#ax[1,1].plot(texp,xylexp,label='exp',color='blue',linewidth=2)
-#ax[1,1].axis([0,1.2*max(texp),0,2.5*max(xylexp)])
-ax[1,1].set_title("Xylan fraction (%)")
+# ax[1,1].plot(tsim,xylsim,label='sim',color='red',linewidth=2)
+# #ax[1,1].plot(texp,xylexp,label='exp',color='blue',linewidth=2)
+# #ax[1,1].axis([0,1.2*max(texp),0,2.5*max(xylexp)])
+# ax[1,1].set_title("Xylan fraction (%)")
 
-ax[1,2].plot(tsim,FISsim,label='sim',color='red',linewidth=2)
-#ax[1,2].plot(texp,FISexp,label='exp',color='blue',linewidth=2)
-#ax[1,2].axis([0,1.2*max(texp),0,2.5*max(FISexp)])
-ax[1,2].set_title("FIS")
+# ax[1,2].plot(tsim,FISsim,label='sim',color='red',linewidth=2)
+# #ax[1,2].plot(texp,FISexp,label='exp',color='blue',linewidth=2)
+# #ax[1,2].axis([0,1.2*max(texp),0,2.5*max(FISexp)])
+# ax[1,2].set_title("FIS")
 
-#plt.legend(loc=1)
-plt.show()
+# #plt.legend(loc=1)
+# plt.show()

@@ -145,6 +145,9 @@ def draw_figures(
                     truth_data_reflected[:, 0] *= -1
                     truth_data = np.vstack((truth_data_reflected[:-1, :], truth_data))
 
+                truth_label_list = ["Truth", "Buggy Truth"]
+                truth_label = truth_label_list[z]
+
                 rho_x = 730.0
                 rho_os = 1400.0
                 f_x0 = 0.26
@@ -176,7 +179,7 @@ def draw_figures(
                     linestyle=ls,
                     linewidth=lw,
                     color=color,
-                    label=f"{truth_file} {tt_truth} s",
+                    label=f"{truth_label} {tt_truth} s",
                 )
                 ax1[0, 1].plot(
                     truth_data[:, 0],
@@ -206,7 +209,7 @@ def draw_figures(
                     linestyle=ls,
                     linewidth=lw,
                     color=color,
-                    label=f"{truth_file} {tt_truth} s",
+                    label=f"{truth_label} {tt_truth} s",
                 )
                 ax2[0, 1].plot(
                     truth_data[:, 0],

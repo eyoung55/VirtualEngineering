@@ -114,7 +114,8 @@ def main(ve_params=None):
     # steam_bulk    = np.trapz(steam*(porosity-liquid),x)/gas_bulk
 
     M_xylose = 150.0
-    M_furf   = 100.0
+    # M_furf   = 100.0
+    M_furf   = 96.0
     M_xylog  = 450.0
 
     xylanweight0 = fx0*(1-ep0)*l
@@ -172,6 +173,8 @@ def main(ve_params=None):
     output_dict['rho_f'] = 1000*float(furfural_bulk*M_furf)
     output_dict['rho_f_init'] = float(furfural[0])
     output_dict['rho_f_final'] = float(furfural[-1])
+
+    print(output_dict)
 
     return output_dict
 
